@@ -24,7 +24,7 @@ export const Canvas: React.FC = () => {
       width: '100%',
       height: '100%',
       overflow: 'auto',
-      backgroundColor: '#f0f0f0',
+      backgroundColor: 'transparent',
       position: 'relative' as const,
       cursor: 'default',
     }),
@@ -48,7 +48,7 @@ export const Canvas: React.FC = () => {
   if (!document) {
     return (
       <div style={containerStyle}>
-        <div style={{ padding: 40, color: '#999', textAlign: 'center' }}>
+        <div style={{ padding: 40, color: '#71717a', textAlign: 'center' }}>
           未加载文档
         </div>
       </div>

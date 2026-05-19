@@ -24,15 +24,5 @@ export type {
   SelectFieldOption,
 } from './PropertyPanel/fields';
 
-// Shared styles
-export {
-  colors,
-  panelStyles,
-  buttonStyles,
-  inputStyles,
-  toolbarStyles,
-  layerTreeStyles,
-  supervisorStyles,
-  colorFieldStyles,
-  selectStyles,
-} from './shared';
+// Note: Shared styles have been migrated to Tailwind CSS.
+// See apps/playground/src/globals.css and apps/playground/tailwind.config.js

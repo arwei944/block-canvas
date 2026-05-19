@@ -8,9 +8,13 @@ import { BlockCanvasError } from '../types';
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export interface HttpTransportConfig {
+  /** 服务端 endpoint 地址 */
   endpoint: string;
+  /** 项目 ID（可选，会附加到请求路径） */
   projectId?: string;
+  /** 自定义请求头 */
   headers?: Record<string, string>;
+  /** 请求超时（毫秒），默认 30000 */
   timeout?: number;
 }
 
@@ -20,6 +24,7 @@ export class HttpTransport {
   private readonly timeout: number;
 
   constructor(config: HttpTransportConfig) {
+    // 去除末尾斜杠
     let base = config.endpoint.replace(/\/+$/, '');
     if (config.projectId) {
       base += `/api/projects/${encodeURIComponent(config.projectId)}`;
@@ -34,6 +39,9 @@ export class HttpTransport {
     this.timeout = config.timeout ?? 30000;
   }
 
+  /**
+   * 发送 HTTP 请求
+   */
   async request<T>(method: HttpMethod, path: string, body?: unknown): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     const controller = new AbortController();
@@ -85,18 +93,30 @@ export class HttpTransport {
     }
   }
 
+  /**
+   * GET 请求
+   */
   async get<T>(path: string): Promise<T> {
     return this.request<T>('GET', path);
   }
 
+  /**
+   * POST 请求
+   */
   async post<T>(path: string, body?: unknown): Promise<T> {
     return this.request<T>('POST', path, body);
   }
 
+  /**
+   * PUT 请求
+   */
   async put<T>(path: string, body?: unknown): Promise<T> {
     return this.request<T>('PUT', path, body);
   }
 
+  /**
+   * DELETE 请求
+   */
   async delete<T>(path: string): Promise<T> {
     return this.request<T>('DELETE', path);
   }

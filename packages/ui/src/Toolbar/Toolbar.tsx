@@ -1,243 +1,156 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useEditor } from '@block-canvas/react';
 import { BlockType } from '@block-canvas/core';
-import type { BlockNode } from '@block-canvas/core';
-import { toolbarStyles, buttonStyles, colors } from '../shared/styles';
+import {
+  toolbarStyles,
+  buttonStyles,
+  colors,
+  fontSize,
+} from '../shared/styles';
 
-const BLOCK_TYPE_ICONS: Record<string, string> = {
-  [BlockType.Text]: 'T',
-  [BlockType.Image]: '\u{1F5BC}',
-  [BlockType.Button]: '\u25A3',
-  [BlockType.Container]: '\u25A1',
-};
-
-const BLOCK_TYPE_LABELS: Record<string, string> = {
-  [BlockType.Text]: '文本',
-  [BlockType.Image]: '图片',
-  [BlockType.Button]: '按钮',
-  [BlockType.Container]: '容器',
-};
-
-function createDefaultNode(type: BlockType): BlockNode {
-  const base = {
-    id: `node_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-    type,
-    name: `${BLOCK_TYPE_LABELS[type] || type}`,
-    style: {},
-    layout: {},
-    visible: true,
-  };
-
-  switch (type) {
-    case BlockType.Text:
-      return {
-        ...base,
-        props: { content: '新文本' },
-      } as BlockNode;
-    case BlockType.Image:
-      return {
-        ...base,
-        props: { src: '', alt: '' },
-      } as BlockNode;
-    case BlockType.Button:
-      return {
-        ...base,
-        props: { label: '按钮', variant: 'primary' },
-      } as BlockNode;
-    case BlockType.Container:
-      return {
-        ...base,
-        props: { children: [] },
-      } as BlockNode;
-    default:
-      return base as BlockNode;
-  }
-}
-
-export interface ToolbarProps {
+interface ToolbarProps {
   style?: React.CSSProperties;
 }
 
-export const Toolbar: React.FC<ToolbarProps> = ({ style }) => {
-  const {
-    zoom,
-    setZoom,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
-    document,
-    addNode,
-  } = useEditor();
-
+const Toolbar: React.FC<ToolbarProps> = ({ style }) => {
+  const { undo, redo, zoom, setZoom, layoutMode, setLayoutMode } = useEditor();
   const [showAddMenu, setShowAddMenu] = useState(false);
-  const [previewMode, setPreviewMode] = useState(false);
-  const [layoutMode, setLayoutMode] = useState<'free' | 'flow'>('free');
-  const menuRef = useRef<HTMLDivElement>(null);
 
-  // 点击外部关闭下拉菜单
-  useEffect(() => {
-    if (!showAddMenu) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setShowAddMenu(false);
-      }
-    };
-    window.document.addEventListener('mousedown', handleClickOutside);
-    return () => window.document.removeEventListener('mousedown', handleClickOutside);
-  }, [showAddMenu]);
-
-  const handleZoomIn = useCallback(() => {
-    setZoom(Math.min(5, zoom + 0.1));
-  }, [zoom, setZoom]);
-
-  const handleZoomOut = useCallback(() => {
-    setZoom(Math.max(0.1, zoom - 0.1));
-  }, [zoom, setZoom]);
-
-  const handleZoomReset = useCallback(() => {
-    setZoom(1);
-  }, [setZoom]);
-
-  const handleAddNode = useCallback(
-    (type: BlockType) => {
-      if (!document) return;
-      const node = createDefaultNode(type);
-      addNode(document.rootId, node);
-      setShowAddMenu(false);
-    },
-    [document, addNode],
+  const handleUndo = useCallback(() => undo(), [undo]);
+  const handleRedo = useCallback(() => redo(), [redo]);
+  const handleZoomIn = useCallback(() => setZoom(Math.min(zoom + 0.1, 3)), [zoom, setZoom]);
+  const handleZoomOut = useCallback(() => setZoom(Math.max(zoom - 0.1, 0.1)), [zoom, setZoom]);
+  const handleZoomReset = useCallback(() => setZoom(1), [setZoom]);
+  const handleToggleLayout = useCallback(
+    () => setLayoutMode(layoutMode === 'free' ? 'flow' : 'free'),
+    [layoutMode, setLayoutMode],
   );
 
-  const zoomPercent = Math.round(zoom * 100);
+  const btnBase = (active?: boolean): React.CSSProperties => ({
+    ...buttonStyles.icon,
+    backgroundColor: active ? colors.active : 'transparent',
+    color: active ? colors.textPrimary : colors.textSecondary,
+  });
+
+  const btnHover = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const t = e.currentTarget as HTMLElement;
+    if (!t.style.backgroundColor || t.style.backgroundColor === 'transparent') {
+      t.style.backgroundColor = colors.hover;
+    }
+  };
+  const btnLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const t = e.currentTarget as HTMLElement;
+    t.style.backgroundColor = t.dataset.active === '1' ? colors.active : 'transparent';
+  };
 
   return (
     <div style={{ ...toolbarStyles.container, ...style }}>
+      {/* 品牌 */}
+      <span style={toolbarStyles.brand}>BlockCanvas</span>
+
+      <div style={toolbarStyles.divider} />
+
       {/* 撤销 / 重做 */}
       <div style={toolbarStyles.group}>
         <button
-          style={{
-            ...(canUndo ? buttonStyles.ghost : buttonStyles.disabled),
-            ...buttonStyles.icon,
-          }}
-          onClick={undo}
-          disabled={!canUndo}
-          title="撤销 (Ctrl+Z)"
+          style={btnBase()}
+          onMouseEnter={btnHover}
+          onMouseLeave={btnLeave}
+          onClick={handleUndo}
+          title="撤销"
         >
-          {'\u21A9'}
+          ↶
         </button>
         <button
-          style={{
-            ...(canRedo ? buttonStyles.ghost : buttonStyles.disabled),
-            ...buttonStyles.icon,
-          }}
-          onClick={redo}
-          disabled={!canRedo}
-          title="重做 (Ctrl+Shift+Z)"
+          style={btnBase()}
+          onMouseEnter={btnHover}
+          onMouseLeave={btnLeave}
+          onClick={handleRedo}
+          title="重做"
         >
-          {'\u21AA'}
+          ↷
         </button>
       </div>
 
       <div style={toolbarStyles.divider} />
 
-      {/* 缩放控制 */}
+      {/* 缩放 */}
       <div style={toolbarStyles.group}>
         <button
-          style={{ ...buttonStyles.ghost, ...buttonStyles.icon }}
+          style={btnBase()}
+          onMouseEnter={btnHover}
+          onMouseLeave={btnLeave}
           onClick={handleZoomOut}
           title="缩小"
         >
-          {'\u2212'}
+          −
         </button>
-        <span style={toolbarStyles.zoomLabel}>{zoomPercent}%</span>
+        <span style={toolbarStyles.zoomLabel}>{Math.round(zoom * 100)}%</span>
         <button
-          style={{ ...buttonStyles.ghost, ...buttonStyles.icon }}
+          style={btnBase()}
+          onMouseEnter={btnHover}
+          onMouseLeave={btnLeave}
           onClick={handleZoomIn}
           title="放大"
         >
           +
         </button>
         <button
-          style={{ ...buttonStyles.ghost, ...buttonStyles.icon }}
+          style={btnBase()}
+          onMouseEnter={btnHover}
+          onMouseLeave={btnLeave}
           onClick={handleZoomReset}
           title="重置缩放"
         >
-          {'\u2922'}
+          ⊡
         </button>
       </div>
 
       <div style={toolbarStyles.divider} />
 
-      {/* 布局模式切换 */}
-      <div style={toolbarStyles.group}>
-        <button
-          style={{
-            ...(layoutMode === 'free' ? buttonStyles.secondary : buttonStyles.ghost),
-            ...buttonStyles.icon,
-          }}
-          onClick={() => setLayoutMode('free')}
-          title="自由布局"
-        >
-          {'\u25A1'}
-        </button>
-        <button
-          style={{
-            ...(layoutMode === 'flow' ? buttonStyles.secondary : buttonStyles.ghost),
-            ...buttonStyles.icon,
-          }}
-          onClick={() => setLayoutMode('flow')}
-          title="流式布局"
-        >
-          {'\u2261'}
-        </button>
-      </div>
+      {/* 布局切换 */}
+      <button
+        style={btnBase(layoutMode === 'flow')}
+        data-active={layoutMode === 'flow' ? '1' : '0'}
+        onMouseEnter={btnHover}
+        onMouseLeave={btnLeave}
+        onClick={handleToggleLayout}
+        title={layoutMode === 'free' ? '切换到流式布局' : '切换到自由布局'}
+      >
+        {layoutMode === 'free' ? '⊞' : '☰'}
+      </button>
 
-      <div style={toolbarStyles.divider} />
-
-      {/* 预览模式切换 */}
-      <div style={toolbarStyles.group}>
-        <button
-          style={{
-            ...(previewMode ? buttonStyles.secondary : buttonStyles.ghost),
-            ...buttonStyles.icon,
-          }}
-          onClick={() => setPreviewMode((v) => !v)}
-          title="切换预览"
-        >
-          {'\u25B6'}
-        </button>
-      </div>
-
-      <div style={toolbarStyles.divider} />
+      <div style={toolbarStyles.spacer} />
 
       {/* 添加组件 */}
-      <div style={toolbarStyles.dropdown} ref={menuRef}>
+      <div style={toolbarStyles.dropdown}>
         <button
-          style={{ ...buttonStyles.primary, ...buttonStyles.icon }}
-          onClick={() => setShowAddMenu((v) => !v)}
-          title="添加组件"
+          style={{ ...btnBase(), gap: 4, padding: '4px 10px', fontSize: fontSize.md, fontWeight: 500 }}
+          onMouseEnter={btnHover}
+          onMouseLeave={btnLeave}
+          onClick={() => setShowAddMenu(!showAddMenu)}
         >
-          +
+          + 添加
         </button>
         {showAddMenu && (
           <div style={toolbarStyles.dropdownMenu}>
-            {Object.values(BlockType).map((type) => (
+            {[
+              { type: BlockType.Text, label: '文本', icon: 'T' },
+              { type: BlockType.Image, label: '图片', icon: '▣' },
+              { type: BlockType.Button, label: '按钮', icon: '▢' },
+              { type: BlockType.Container, label: '容器', icon: '⊞' },
+            ].map((item) => (
               <button
-                key={type}
+                key={item.type}
                 style={toolbarStyles.dropdownItem}
-                onClick={() => handleAddNode(type)}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = colors.bgHover;
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = colors.hover)}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                onClick={() => setShowAddMenu(false)}
               >
-                <span style={toolbarStyles.group}>
-                  {BLOCK_TYPE_ICONS[type]}
+                <span style={{ width: 16, textAlign: 'center', fontSize: 12, color: colors.textTertiary }}>
+                  {item.icon}
                 </span>
-                <span>{BLOCK_TYPE_LABELS[type]}</span>
+                {item.label}
               </button>
             ))}
           </div>
@@ -246,3 +159,5 @@ export const Toolbar: React.FC<ToolbarProps> = ({ style }) => {
     </div>
   );
 };
+
+export { Toolbar };

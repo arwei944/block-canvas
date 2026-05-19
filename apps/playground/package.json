@@ -1,6 +1,6 @@
 {
   "name": "@block-canvas/playground",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "Playground app for block-canvas editor",
   "type": "module",
@@ -11,12 +11,16 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@block-canvas/components": "workspace:*",
     "@block-canvas/core": "workspace:*",
     "@block-canvas/react": "workspace:*",
-    "@block-canvas/components": "workspace:*",
     "@block-canvas/ui": "workspace:*",
+    "autoprefixer": "^10.5.0",
+    "lucide-react": "^1.16.0",
+    "postcss": "^8.5.14",
     "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react-dom": "^18.3.0",
+    "tailwindcss": "3"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",

@@ -1,0 +1,150 @@
+/* ============================================================
+   BlockCanvas - CSS Variable Token 体系
+   复刻自 Amber: 三层结构 Primitive → Semantic → Component
+   ============================================================ */
+
+/* ==================== Primitive Tokens ==================== */
+:root {
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-gray-950: #09090b;
+
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-green-400: #4ade80;
+  --color-green-500: #22c55e;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-purple-400: #c084fc;
+  --color-purple-500: #a855f7;
+
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==================== Semantic Tokens (Light) ==================== */
+:root {
+  --bg-primary: var(--color-gray-50);
+  --bg-secondary: var(--color-gray-100);
+  --bg-tertiary: var(--color-gray-200);
+  --bg-elevated: #ffffff;
+  --bg-overlay: rgb(0 0 0 / 0.5);
+
+  --text-primary: var(--color-gray-900);
+  --text-secondary: var(--color-gray-600);
+  --text-tertiary: var(--color-gray-400);
+  --text-inverse: #ffffff;
+
+  --border-default: var(--color-gray-200);
+  --border-strong: var(--color-gray-300);
+  --border-focus: var(--color-blue-500);
+
+  --color-accent: var(--color-blue-500);
+  --color-accent-hover: var(--color-blue-600);
+  --color-danger: var(--color-red-500);
+  --color-success: var(--color-green-500);
+  --color-warning: var(--color-amber-500);
+
+  --spacing-component-gap: var(--space-4);
+  --spacing-section-gap: var(--space-8);
+  --spacing-page-padding: var(--space-6);
+
+  --font-size-heading: var(--font-size-2xl);
+  --font-size-body: var(--font-size-base);
+  --font-size-caption: var(--font-size-sm);
+}
+
+/* ==================== Semantic Tokens (Dark) ==================== */
+.dark {
+  --bg-primary: var(--color-gray-950);
+  --bg-secondary: var(--color-gray-900);
+  --bg-tertiary: var(--color-gray-800);
+  --bg-elevated: var(--color-gray-900);
+  --bg-overlay: rgb(0 0 0 / 0.7);
+
+  --text-primary: var(--color-gray-100);
+  --text-secondary: var(--color-gray-400);
+  --text-tertiary: var(--color-gray-500);
+  --text-inverse: var(--color-gray-900);
+
+  --border-default: var(--color-gray-800);
+  --border-strong: var(--color-gray-700);
+  --border-focus: var(--color-blue-400);
+
+  --color-accent: var(--color-blue-500);
+  --color-accent-hover: var(--color-blue-400);
+  --color-danger: var(--color-red-400);
+  --color-success: var(--color-green-400);
+  --color-warning: var(--color-amber-400);
+}
+
+/* ==================== Component Tokens ==================== */
+:root {
+  --titlebar-bg: var(--bg-secondary);
+  --titlebar-height: 40px;
+  --titlebar-border-color: var(--border-default);
+
+  --panel-bg: var(--bg-elevated);
+  --panel-header-bg: var(--bg-secondary);
+  --panel-border-color: var(--border-default);
+  --panel-header-height: 32px;
+
+  --button-primary-bg: var(--color-accent);
+  --button-primary-text: var(--text-inverse);
+  --button-secondary-bg: var(--bg-secondary);
+  --button-secondary-text: var(--text-primary);
+  --button-padding-x: var(--space-4);
+  --button-padding-y: var(--space-2);
+  --button-border-radius: var(--radius-md);
+
+  --input-bg: var(--bg-primary);
+  --input-border-color: var(--border-default);
+  --input-text-color: var(--text-primary);
+  --input-focus-border: var(--border-focus);
+  --input-height: 30px;
+  --input-border-radius: var(--radius-sm);
+}
