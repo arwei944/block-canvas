@@ -13,10 +13,13 @@ import {
   createButtonBlock,
   createContainerBlock,
   useEditorStore,
+  loadFromLocalStorage,
+  enableAutoSave,
   type BlockNode,
 } from '@block-canvas/core';
 import { getAllComponents } from '@block-canvas/components';
 import { useTheme, ThemeProvider } from './providers/ThemeProvider';
+import { useSSESync } from './hooks/useSSESync';
 import type { BlockDocument } from '@block-canvas/core';
 
 import {
@@ -808,10 +811,22 @@ function SupervisorPanelContent({
 
 const EditorApp: React.FC = () => {
   const { document, redo } = useEditor();
+  useSSESync(); // Connect to MCP Server SSE
 
   useEffect(() => {
-    const sampleDoc = createSampleDocument();
-    useEditorStore.getState().initDocument(sampleDoc);
+    // Try localStorage first, then sample
+    const saved = loadFromLocalStorage();
+    if (saved) {
+      useEditorStore.getState().initDocument(saved);
+    } else if (!useEditorStore.getState().document) {
+      const sampleDoc = createSampleDocument();
+      useEditorStore.getState().initDocument(sampleDoc);
+    }
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = enableAutoSave();
+    return unsubscribe;
   }, []);
 
   const handleApprove = useCallback(() => {

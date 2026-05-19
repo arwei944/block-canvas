@@ -12,13 +12,16 @@ import { registerDocumentTools } from './tools/document-tools.js';
 import { registerCanvasResources } from './tools/canvas-resources.js';
 import { registerLayoutTools } from './tools/layout-tools.js';
 import { registerTransactionTool } from './tools/transaction-tools.js';
+import { registerScreenshotTool } from './tools/screenshot-tool.js';
 import { registerPrompts } from './prompts/index.js';
+import { SSEServer } from './sse-server.js';
 
 export class BlockCanvasMCPServer {
   private server: McpServer;
   private snapshotEngine: SnapshotEngine;
   private diagnoseEngine: DiagnoseEngine;
   private spatialAPI: SpatialAPI;
+  private sseServer: SSEServer;
 
   constructor() {
     // Initialize store
@@ -84,19 +87,24 @@ export class BlockCanvasMCPServer {
     registerCanvasResources(this.server, this.snapshotEngine, this.diagnoseEngine);
     registerLayoutTools(this.server, this.spatialAPI);
     registerTransactionTool(this.server);
+    registerScreenshotTool(this.server);
     registerPrompts(this.server);
+
+    this.sseServer = new SSEServer();
   }
 
   async start(transport?: StdioServerTransport) {
     const t = transport || new StdioServerTransport();
     await this.server.connect(t);
-    console.error('BlockCanvas MCP Server started');
+    this.sseServer.start(5175);
+    console.error('BlockCanvas MCP Server started (SSE on :5175)');
   }
 
   // Expose engines for testing
   getSnapshotEngine() { return this.snapshotEngine; }
   getDiagnoseEngine() { return this.diagnoseEngine; }
   getSpatialAPI() { return this.spatialAPI; }
+  getSSEServer() { return this.sseServer; }
 }
 
 export function createBlockCanvasServer(): BlockCanvasMCPServer {

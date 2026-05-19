@@ -1,6 +1,6 @@
 {
   "name": "@block-canvas/mcp-server",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "MCP Server for BlockCanvas - AI Agent visual frontend building service",
   "type": "module",
   "main": "dist/index.js",
