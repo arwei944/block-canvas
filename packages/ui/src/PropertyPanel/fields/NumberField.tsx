@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { inputStyles } from '../../shared/styles';
+import React from 'react';
 
 export interface NumberFieldProps {
   label?: string;
@@ -10,7 +9,7 @@ export interface NumberFieldProps {
   step?: number;
   placeholder?: string;
   disabled?: boolean;
-  style?: React.CSSProperties;
+  className?: string;
 }
 
 export const NumberField: React.FC<NumberFieldProps> = ({
@@ -22,37 +21,27 @@ export const NumberField: React.FC<NumberFieldProps> = ({
   step = 1,
   placeholder,
   disabled,
-  style,
-}) => {
-  const [focused, setFocused] = useState(false);
-
-  return (
-    <div style={{ ...inputStyles.fieldGroup, ...style }}>
-      {label && <label style={inputStyles.label}>{label}</label>}
-      <input
-        type="number"
-        value={value ?? ''}
-        onChange={(e) => {
-          const v = e.target.value;
-          if (v === '') {
-            onChange(0);
-          } else {
-            onChange(Number(v));
-          }
-        }}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        min={min}
-        max={max}
-        step={step}
-        placeholder={placeholder}
-        disabled={disabled}
-        style={{
-          ...inputStyles.base,
-          ...(focused ? inputStyles.focus : {}),
-          ...(disabled ? { opacity: 0.5, cursor: 'not-allowed' } : {}),
-        }}
-      />
-    </div>
-  );
-};
+  className = '',
+}) => (
+  <div className={`mb-3 ${disabled ? 'opacity-50' : ''} ${className}`}>
+    {label && <label className="mb-1 block text-xs font-medium text-zinc-400">{label}</label>}
+    <input
+      type="number"
+      className="h-[30px] w-full rounded border border-zinc-700 bg-zinc-800 px-2 text-[13px] text-zinc-200 outline-none transition-colors focus:border-blue-500 disabled:cursor-not-allowed"
+      value={value ?? ''}
+      min={min}
+      max={max}
+      step={step}
+      placeholder={placeholder}
+      disabled={disabled}
+      onChange={(e) => {
+        const v = e.target.value;
+        if (v === '') {
+          onChange(0);
+        } else {
+          onChange(Number(v));
+        }
+      }}
+    />
+  </div>
+);

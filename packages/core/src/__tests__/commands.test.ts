@@ -42,13 +42,13 @@ describe('CommandManager', () => {
       };
 
       manager.register(command);
-      manager.execute('test.echo', {});
+      manager.execute('test.echo', {} as any);
 
       expect(executedCommands).toEqual(['echo']);
     });
 
     it('should throw when executing an unregistered command', () => {
-      expect(() => manager.execute('nonexistent', {})).toThrow(
+      expect(() => manager.execute('nonexistent', {} as any)).toThrow(
         'Command "nonexistent" not found',
       );
     });
@@ -68,8 +68,8 @@ describe('CommandManager', () => {
       ];
 
       manager.registerAll(commands);
-      manager.execute('test.a', {});
-      manager.execute('test.b', {});
+      manager.execute('test.a', {} as any);
+      manager.execute('test.b', {} as any);
 
       expect(executedCommands).toEqual(['a', 'b']);
     });
@@ -85,7 +85,7 @@ describe('CommandManager', () => {
       };
 
       manager.register(command);
-      manager.execute('test.undoable', {});
+      manager.execute('test.undoable', {} as any);
 
       expect(manager.canUndo()).toBe(true);
       expect(manager.canRedo()).toBe(false);
@@ -99,7 +99,7 @@ describe('CommandManager', () => {
       };
 
       manager.register(command);
-      manager.execute('test.nonundoable', {});
+      manager.execute('test.nonundoable', {} as any);
 
       expect(manager.canUndo()).toBe(false);
     });
@@ -113,7 +113,7 @@ describe('CommandManager', () => {
       };
 
       manager.register(command);
-      manager.execute('test.undoable', {});
+      manager.execute('test.undoable', {} as any);
       manager.undo();
 
       expect(undoneCommands).toEqual(['undo']);
@@ -130,7 +130,7 @@ describe('CommandManager', () => {
       };
 
       manager.register(command);
-      manager.execute('test.undoable', {});
+      manager.execute('test.undoable', {} as any);
       manager.undo();
       manager.redo();
 
@@ -148,9 +148,9 @@ describe('CommandManager', () => {
       };
 
       manager.register(command);
-      manager.execute('test.undoable', {});
+      manager.execute('test.undoable', {} as any);
       manager.undo();
-      manager.execute('test.undoable', {});
+      manager.execute('test.undoable', {} as any);
 
       expect(manager.canRedo()).toBe(false);
     });
@@ -164,7 +164,7 @@ describe('CommandManager', () => {
       };
 
       manager.register(command);
-      manager.execute('test.undoable', {});
+      manager.execute('test.undoable', {} as any);
 
       const history = manager.getHistory();
       expect(history.past).toHaveLength(1);
@@ -181,7 +181,7 @@ describe('CommandManager', () => {
       };
 
       manager.register(command);
-      manager.execute('test.undoable', {});
+      manager.execute('test.undoable', {} as any);
       manager.clear();
 
       expect(manager.canUndo()).toBe(false);

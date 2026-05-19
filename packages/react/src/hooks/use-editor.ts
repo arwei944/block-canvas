@@ -142,6 +142,7 @@ export function useEditor() {
     // 状态
     document,
     selection,
+    selectedIds: selection?.selectedIds || [],
     zoom,
     isDragging,
     initialized,

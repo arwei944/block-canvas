@@ -60,7 +60,7 @@ describe('createImageBlock', () => {
     const node = createImageBlock('https://example.com/img.png', {
       name: 'My Image',
       style: { width: '100px' },
-      props: { alt: 'test' },
+      props: { alt: 'test', src: 'test.jpg' },
     });
     expect(node.name).toBe('My Image');
     expect(node.style.width).toBe('100px');
@@ -79,7 +79,7 @@ describe('createButtonBlock', () => {
   it('should accept overrides', () => {
     const node = createButtonBlock('Submit', {
       name: 'Submit Button',
-      props: { variant: 'primary' },
+      props: { variant: 'primary', label: 'Test' },
     });
     expect(node.name).toBe('Submit Button');
     expect(node.props.variant).toBe('primary');
@@ -140,7 +140,7 @@ describe('cloneNode', () => {
 
   it('should deep clone an image node', () => {
     const original = createImageBlock('https://example.com/img.png', {
-      props: { alt: 'test' },
+      props: { alt: 'test', src: 'test.jpg' },
     });
     const cloned = cloneNode(original);
     expect(cloned.id).not.toBe(original.id);
@@ -150,7 +150,7 @@ describe('cloneNode', () => {
 
   it('should deep clone a button node', () => {
     const original = createButtonBlock('Click', {
-      props: { variant: 'primary' },
+      props: { variant: 'primary', label: 'Test' },
     });
     const cloned = cloneNode(original);
     expect(cloned.id).not.toBe(original.id);
@@ -183,42 +183,42 @@ describe('validateNode', () => {
   it('should return false for a node without id', () => {
     const node = createTextBlock('Hello');
     const invalid = { ...node, id: '' };
-    expect(validateNode(invalid)).toBe(false);
+    expect(validateNode(invalid as any)).toBe(false);
   });
 
   it('should return false for a node without name', () => {
     const node = createTextBlock('Hello');
     const invalid = { ...node, name: '' };
-    expect(validateNode(invalid)).toBe(false);
+    expect(validateNode(invalid as any)).toBe(false);
   });
 
   it('should return false for a node with invalid type', () => {
     const node = createTextBlock('Hello');
     const invalid = { ...node, type: 'unknown' };
-    expect(validateNode(invalid)).toBe(false);
+    expect(validateNode(invalid as any)).toBe(false);
   });
 
   it('should return false for a text node without content', () => {
     const node = createTextBlock('Hello');
     const invalid = { ...node, props: { ...node.props, content: undefined } };
-    expect(validateNode(invalid)).toBe(false);
+    expect(validateNode(invalid as any)).toBe(false);
   });
 
   it('should return false for an image node without src', () => {
     const node = createImageBlock('https://example.com/img.png');
     const invalid = { ...node, props: { ...node.props, src: undefined } };
-    expect(validateNode(invalid)).toBe(false);
+    expect(validateNode(invalid as any)).toBe(false);
   });
 
   it('should return false for a button node without label', () => {
     const node = createButtonBlock('Click');
     const invalid = { ...node, props: { ...node.props, label: undefined } };
-    expect(validateNode(invalid)).toBe(false);
+    expect(validateNode(invalid as any)).toBe(false);
   });
 
   it('should return false for a container node without children array', () => {
     const node = createContainerBlock([]);
     const invalid = { ...node, props: { children: null } };
-    expect(validateNode(invalid)).toBe(false);
+    expect(validateNode(invalid as any)).toBe(false);
   });
 });

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { EditorProvider } from '../context/editor-context';
 import { Canvas } from '../Canvas';
+import { useEditorStore } from '@block-canvas/core';
 import type { BlockDocument } from '@block-canvas/core';
 
 // ---- Editor Props ----
@@ -52,8 +53,11 @@ const EditorInner: React.FC<EditorInnerProps> = ({
   style,
   className,
 }) => {
-  // TODO: 当 document prop 变化时调用 initDocument
-  // 目前 Phase 1 暂不实现 prop 联动，由用户手动调用 initDocument
+  useEffect(() => {
+    if (document) {
+      useEditorStore.getState().initDocument(document);
+    }
+  }, [document]);
 
   const containerStyle: React.CSSProperties = {
     width: '100%',

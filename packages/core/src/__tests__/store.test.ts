@@ -79,7 +79,7 @@ describe('EditorStore', () => {
   describe('addNode', () => {
     it('should add a node to a parent container', () => {
       const state = useEditorStore.getState();
-      const containerId = doc.nodes[doc.rootId].props.children[0];
+      const containerId = (doc.nodes[doc.rootId].props as any).children[0];
       const newNode = createTextBlock('New Node', { name: 'Added' });
 
       state.addNode(containerId, newNode);
@@ -109,7 +109,7 @@ describe('EditorStore', () => {
   describe('removeNode', () => {
     it('should remove a node and its children from the document', () => {
       const state = useEditorStore.getState();
-      const containerId = doc.nodes[doc.rootId].props.children[0];
+      const containerId = (doc.nodes[doc.rootId].props as any).children[0];
       const container = doc.nodes[containerId] as any;
       const childId = container.props.children[0]; // text node
 
@@ -187,7 +187,7 @@ describe('EditorStore', () => {
   describe('moveNode', () => {
     it('should move a node to a new parent container', () => {
       const state = useEditorStore.getState();
-      const containerId = doc.nodes[doc.rootId].props.children[0];
+      const containerId = (doc.nodes[doc.rootId].props as any).children[0];
       const container = doc.nodes[containerId] as any;
       const childId = container.props.children[0]; // text node
 

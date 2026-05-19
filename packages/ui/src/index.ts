@@ -12,7 +12,7 @@ export { PropertyPanel } from './PropertyPanel';
 export type { PropertyPanelProps } from './PropertyPanel';
 
 export { SupervisorPanel } from './SupervisorPanel';
-export type { SupervisorPanelProps, OperationLog, LogStatus } from './SupervisorPanel';
+export type { SupervisorPanelProps, LogEntry, LogStatus } from './SupervisorPanel';
 
 // Fields (re-exported from PropertyPanel for convenience)
 export { TextField, NumberField, ColorField, SelectField } from './PropertyPanel/fields';
@@ -24,5 +24,5 @@ export type {
   SelectFieldOption,
 } from './PropertyPanel/fields';
 
-// Note: Shared styles have been migrated to Tailwind CSS.
-// See apps/playground/src/globals.css and apps/playground/tailwind.config.js
+// Shared constants
+export { TYPE_ICON_COLORS, STATUS_DOT_COLORS } from './shared/constants';

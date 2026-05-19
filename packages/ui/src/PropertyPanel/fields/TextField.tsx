@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { inputStyles } from '../../shared/styles';
+import React from 'react';
 
 export interface TextFieldProps {
   label?: string;
@@ -7,7 +6,7 @@ export interface TextFieldProps {
   onChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
-  style?: React.CSSProperties;
+  className?: string;
 }
 
 export const TextField: React.FC<TextFieldProps> = ({
@@ -16,27 +15,16 @@ export const TextField: React.FC<TextFieldProps> = ({
   onChange,
   placeholder,
   disabled,
-  style,
-}) => {
-  const [focused, setFocused] = useState(false);
-
-  return (
-    <div style={{ ...inputStyles.fieldGroup, ...style }}>
-      {label && <label style={inputStyles.label}>{label}</label>}
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        placeholder={placeholder}
-        disabled={disabled}
-        style={{
-          ...inputStyles.base,
-          ...(focused ? inputStyles.focus : {}),
-          ...(disabled ? { opacity: 0.5, cursor: 'not-allowed' } : {}),
-        }}
-      />
-    </div>
-  );
-};
+  className = '',
+}) => (
+  <div className={`mb-3 ${disabled ? 'opacity-50' : ''} ${className}`}>
+    {label && <label className="mb-1 block text-xs font-medium text-zinc-400">{label}</label>}
+    <input
+      className="h-[30px] w-full rounded border border-zinc-700 bg-zinc-800 px-2 text-[13px] text-zinc-200 outline-none transition-colors focus:border-blue-500 disabled:cursor-not-allowed"
+      value={value}
+      placeholder={placeholder}
+      disabled={disabled}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  </div>
+);

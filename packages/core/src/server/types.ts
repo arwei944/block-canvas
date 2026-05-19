@@ -16,6 +16,10 @@ export interface AddNodeRequest {
   index?: number;
 }
 
+export interface UpdateDataRequest {
+  data: Record<string, unknown>;
+}
+
 export interface UpdateStyleRequest {
   style: Record<string, unknown>;
 }
@@ -60,4 +64,20 @@ export interface TreeNode {
   name: string;
   type: string;
   children: TreeNode[];
+}
+
+// ---- 事务相关 ----
+
+export interface Operation {
+  type: string;
+  params: Record<string, unknown>;
+}
+
+export interface TransactionRequest {
+  operations: Operation[];
+}
+
+export interface TransactionResult {
+  success: boolean;
+  results: Array<{ operation: string; success: boolean; error?: string; data?: unknown }>;
 }

@@ -2,154 +2,144 @@ import React, { useState, useCallback } from 'react';
 import { useEditor } from '@block-canvas/react';
 import { BlockType } from '@block-canvas/core';
 import {
-  toolbarStyles,
-  buttonStyles,
-  colors,
-  fontSize,
-} from '../shared/styles';
+  Undo2,
+  Redo2,
+  ZoomIn,
+  Maximize2,
+  LayoutGrid,
+  Plus,
+  Minus,
+  Type,
+  Image,
+  Square,
+  Box,
+} from 'lucide-react';
 
-interface ToolbarProps {
-  style?: React.CSSProperties;
+export interface ToolbarProps {
+  onAddComponent?: (type: string) => void;
+  className?: string;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ style }) => {
-  const { undo, redo, zoom, setZoom, layoutMode, setLayoutMode } = useEditor();
+const Toolbar: React.FC<ToolbarProps> = ({ onAddComponent, className = '' }) => {
+  const { undo, redo, zoom, setZoom } = useEditor();
   const [showAddMenu, setShowAddMenu] = useState(false);
 
   const handleUndo = useCallback(() => undo(), [undo]);
   const handleRedo = useCallback(() => redo(), [redo]);
-  const handleZoomIn = useCallback(() => setZoom(Math.min(zoom + 0.1, 3)), [zoom, setZoom]);
-  const handleZoomOut = useCallback(() => setZoom(Math.max(zoom - 0.1, 0.1)), [zoom, setZoom]);
+  const handleZoomIn = useCallback(
+    () => setZoom(Math.min(zoom + 0.1, 3)),
+    [zoom, setZoom],
+  );
+  const handleZoomOut = useCallback(
+    () => setZoom(Math.max(zoom - 0.1, 0.1)),
+    [zoom, setZoom],
+  );
   const handleZoomReset = useCallback(() => setZoom(1), [setZoom]);
-  const handleToggleLayout = useCallback(
-    () => setLayoutMode(layoutMode === 'free' ? 'flow' : 'free'),
-    [layoutMode, setLayoutMode],
+
+  const handleAdd = useCallback(
+    (type: string) => {
+      setShowAddMenu(false);
+      onAddComponent?.(type);
+    },
+    [onAddComponent],
   );
 
-  const btnBase = (active?: boolean): React.CSSProperties => ({
-    ...buttonStyles.icon,
-    backgroundColor: active ? colors.active : 'transparent',
-    color: active ? colors.textPrimary : colors.textSecondary,
-  });
-
-  const btnHover = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const t = e.currentTarget as HTMLElement;
-    if (!t.style.backgroundColor || t.style.backgroundColor === 'transparent') {
-      t.style.backgroundColor = colors.hover;
-    }
-  };
-  const btnLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const t = e.currentTarget as HTMLElement;
-    t.style.backgroundColor = t.dataset.active === '1' ? colors.active : 'transparent';
-  };
+  const addItems = [
+    { type: BlockType.Text, label: '文本', icon: <Type size={14} /> },
+    { type: BlockType.Image, label: '图片', icon: <Image size={14} /> },
+    { type: BlockType.Button, label: '按钮', icon: <Square size={14} /> },
+    { type: BlockType.Container, label: '容器', icon: <Box size={14} /> },
+  ];
 
   return (
-    <div style={{ ...toolbarStyles.container, ...style }}>
-      {/* 品牌 */}
-      <span style={toolbarStyles.brand}>BlockCanvas</span>
+    <div
+      className={`flex h-10 shrink-0 items-center border-b border-zinc-800 bg-zinc-900 px-3 select-none ${className}`}
+    >
+      {/* Brand */}
+      <span className="mr-4 text-sm font-bold tracking-tight text-zinc-100">
+        BlockCanvas
+      </span>
 
-      <div style={toolbarStyles.divider} />
+      <div className="mx-2 h-5 w-px bg-zinc-800" />
 
-      {/* 撤销 / 重做 */}
-      <div style={toolbarStyles.group}>
+      {/* Undo / Redo */}
+      <div className="flex items-center gap-0.5">
         <button
-          style={btnBase()}
-          onMouseEnter={btnHover}
-          onMouseLeave={btnLeave}
           onClick={handleUndo}
           title="撤销"
+          className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
         >
-          ↶
+          <Undo2 size={14} />
         </button>
         <button
-          style={btnBase()}
-          onMouseEnter={btnHover}
-          onMouseLeave={btnLeave}
           onClick={handleRedo}
           title="重做"
+          className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
         >
-          ↷
+          <Redo2 size={14} />
         </button>
       </div>
 
-      <div style={toolbarStyles.divider} />
+      <div className="mx-2 h-5 w-px bg-zinc-800" />
 
-      {/* 缩放 */}
-      <div style={toolbarStyles.group}>
+      {/* Zoom */}
+      <div className="flex items-center gap-0.5">
         <button
-          style={btnBase()}
-          onMouseEnter={btnHover}
-          onMouseLeave={btnLeave}
           onClick={handleZoomOut}
           title="缩小"
+          className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
         >
-          −
+          <Minus size={14} />
         </button>
-        <span style={toolbarStyles.zoomLabel}>{Math.round(zoom * 100)}%</span>
+        <span className="min-w-[40px] text-center font-mono text-xs text-zinc-500">
+          {Math.round(zoom * 100)}%
+        </span>
         <button
-          style={btnBase()}
-          onMouseEnter={btnHover}
-          onMouseLeave={btnLeave}
           onClick={handleZoomIn}
           title="放大"
+          className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
         >
-          +
+          <ZoomIn size={14} />
         </button>
         <button
-          style={btnBase()}
-          onMouseEnter={btnHover}
-          onMouseLeave={btnLeave}
           onClick={handleZoomReset}
           title="重置缩放"
+          className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
         >
-          ⊡
+          <Maximize2 size={14} />
         </button>
       </div>
 
-      <div style={toolbarStyles.divider} />
+      <div className="mx-2 h-5 w-px bg-zinc-800" />
 
-      {/* 布局切换 */}
+      {/* Layout toggle */}
       <button
-        style={btnBase(layoutMode === 'flow')}
-        data-active={layoutMode === 'flow' ? '1' : '0'}
-        onMouseEnter={btnHover}
-        onMouseLeave={btnLeave}
-        onClick={handleToggleLayout}
-        title={layoutMode === 'free' ? '切换到流式布局' : '切换到自由布局'}
+        title="布局切换"
+        className="flex h-7 w-7 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
       >
-        {layoutMode === 'free' ? '⊞' : '☰'}
+        <LayoutGrid size={14} />
       </button>
 
-      <div style={toolbarStyles.spacer} />
+      <div className="flex-1" />
 
-      {/* 添加组件 */}
-      <div style={toolbarStyles.dropdown}>
+      {/* Add component */}
+      <div className="relative">
         <button
-          style={{ ...btnBase(), gap: 4, padding: '4px 10px', fontSize: fontSize.md, fontWeight: 500 }}
-          onMouseEnter={btnHover}
-          onMouseLeave={btnLeave}
           onClick={() => setShowAddMenu(!showAddMenu)}
+          className="flex items-center gap-1 rounded-md bg-zinc-800 px-2.5 py-1 text-[11px] font-medium text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-zinc-200"
         >
-          + 添加
+          <Plus size={12} />
+          添加
         </button>
         {showAddMenu && (
-          <div style={toolbarStyles.dropdownMenu}>
-            {[
-              { type: BlockType.Text, label: '文本', icon: 'T' },
-              { type: BlockType.Image, label: '图片', icon: '▣' },
-              { type: BlockType.Button, label: '按钮', icon: '▢' },
-              { type: BlockType.Container, label: '容器', icon: '⊞' },
-            ].map((item) => (
+          <div className="absolute right-0 top-full z-50 mt-1 min-w-[140px] rounded-lg border border-zinc-700 bg-zinc-800 p-1 shadow-xl">
+            {addItems.map((item) => (
               <button
                 key={item.type}
-                style={toolbarStyles.dropdownItem}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = colors.hover)}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-                onClick={() => setShowAddMenu(false)}
+                className="flex w-full items-center gap-2 rounded px-2 py-1.5 text-xs text-zinc-300 transition-colors hover:bg-zinc-700"
+                onClick={() => handleAdd(item.type)}
               >
-                <span style={{ width: 16, textAlign: 'center', fontSize: 12, color: colors.textTertiary }}>
-                  {item.icon}
-                </span>
+                <span className="text-zinc-500">{item.icon}</span>
                 {item.label}
               </button>
             ))}

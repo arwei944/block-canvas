@@ -1,2 +1,1 @@
-// Design tokens are now managed via Tailwind CSS.
-// See apps/playground/src/globals.css and apps/playground/tailwind.config.js
+export { TYPE_ICON_COLORS, STATUS_DOT_COLORS } from './constants';
