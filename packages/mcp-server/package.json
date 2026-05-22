@@ -1,0 +1,27 @@
+{
+  "name": "@block-canvas/mcp-server",
+  "version": "3.2.0",
+  "description": "MCP Server for BlockCanvas - AI Agent visual frontend building service",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "blockcanvas-mcp": "./dist/cli.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/cli.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@block-canvas/core": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.22.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^25.9.0"
+  }
+}

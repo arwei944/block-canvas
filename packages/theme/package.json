@@ -1,0 +1,22 @@
+{
+  "name": "@block-canvas/theme",
+  "version": "3.2.0",
+  "description": "Theme system for BlockCanvas - flexible style switching",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "react": "^18.3.0",
+    "typescript": "^5.4.0",
+    "@types/react": "^18.3.0"
+  }
+}
